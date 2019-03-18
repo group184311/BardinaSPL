@@ -45,7 +45,7 @@ int main(void)
 	//прописываем подтяжку к земле
 	//0x40010C00 gpioc (datasheet)
 	//address output data register - 0x0C
-	GPIO_WriteBit(GPIOA, GPIO_Pin_2, Bit_RESET);
+	//GPIO_WriteBit(GPIOA, GPIO_Pin_2, Bit_RESET); - не нужно, уже в GPIO_Mode прописали IPD
 
 	for(;;)
 	{
