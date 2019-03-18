@@ -1,0 +1,10 @@
+.settings/
+Debug/
+inc/
+startup/
+.cproject
+.project
+*.cfg
+*.xml
+*.ld
+*.bin
