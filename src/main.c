@@ -8,6 +8,8 @@
 
 #include "stm32f10x.h"
 
+uint16_t delay = 500;
+
 int main(void)
 {
 	//Включаем тактирование порта A, B и C
@@ -46,5 +48,23 @@ int main(void)
 	GPIOC -> CRH &= ~(GPIO_CRH_CNF13_1 | GPIO_CRH_CNF13_0 | GPIO_CRH_MODE13_1 | GPIO_CRH_MODE13_0);
 	GPIOC -> CRH |= GPIO_CRH_MODE13_1;
 
+	//включаем тактирование таймера
+	RCC -> APB1ENR |= RCC_APB1ENR_TIM3EN;
+
+	//запускаем таймер на тактовой частоте в 1000 Hz
+	//Fmax = 36 000 000 Hz, нужно 1000 => 36 0000 000 / 1 000 = 36 000
+	TIM3 -> PSC = 36000 - 1; //задаем предделитель TIMx_PSC
+	//начальное значение периода - 500 тактов (delay)
+	TIM3 -> ARR = delay-1;
+	//разрешаем прерывания таймера 3 по переполнению (DMA/interrupt enable register ;  Update interrupt enable)
+	TIM3 -> DIER |= TIM_DIER_UIE;
+
+	NVIC_EnableIRQ(TIM3_IRQn);
+
 	for(;;);
+}
+
+void TIM3_IRQHandler(void)
+{
+	 TIM3->SR &= ~TIM_SR_UIF; //Clean UIF Flag
 }
