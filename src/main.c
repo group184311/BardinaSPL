@@ -10,8 +10,8 @@
 
 int main(void)
 {
-	//Включаем тактирование порта A и C
-	RCC ->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPCEN;
+	//Включаем тактирование порта A, B и C
+	RCC ->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN | RCC_APB2ENR_IOPCEN;
 
 	//кнопка 1 - порт A, пин6 (low - CRL)
 	//сброс состояния
@@ -33,6 +33,12 @@ int main(void)
 	//вывод кнопки как выход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
 	GPIOA -> CRL |= GPIO_CRL_CNF3_1;
 
+	//кнопка 4 - порт B, пин12 (high - CRH)
+	//сброс состояния
+	GPIOB -> CRH &= ~(GPIO_CRH_CNF12_1 | GPIO_CRH_CNF12_0 | GPIO_CRH_MODE12_1 | GPIO_CRH_MODE12_0);
+	//вывод кнопки как выход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
+	GPIOB -> CRH |= GPIO_CRH_CNF12_1;
+	GPIOB -> ODR |= GPIO_ODR_ODR12; //к питанию
 
 	//светодиод - порт C, пин13 (high - CRH)
 	//сброс состояния
