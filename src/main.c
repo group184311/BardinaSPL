@@ -9,6 +9,7 @@
 #include "stm32f10x.h"
 
 uint16_t delay = 500;
+uint16_t work = 500;
 
 int main(void)
 {
@@ -33,7 +34,9 @@ int main(void)
 	//сброс состояния
 	GPIOA -> CRL &= ~(GPIO_CRL_CNF3_1 | GPIO_CRL_CNF3_0 | GPIO_CRL_MODE3_1 | GPIO_CRL_MODE3_0);
 	//вывод кнопки как выход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
+	// ТЫ САМА ПОНИМАЕШЬ КАК СКОНФИГУРИРОВАЛА КНОПКУ? ЕСЛИ ЭТО КНОПКА, ТО ПОЧЕМУ ЭТО ВЫХОД?
 	GPIOA -> CRL |= GPIO_CRL_CNF3_1;
+	//ПОДТЯЖКА К ЧЕМУ? ОДР ЗАБЫЛА
 
 	//кнопка 4 - порт B, пин12 (high - CRH)
 	//сброс состояния
@@ -47,6 +50,8 @@ int main(void)
 	//вывод светодиода как выход pull/push MODE=10: Max. output speed 2 MHz ; CRH=00:  General purpose output push-pull
 	GPIOC -> CRH &= ~(GPIO_CRH_CNF13_1 | GPIO_CRH_CNF13_0 | GPIO_CRH_MODE13_1 | GPIO_CRH_MODE13_0);
 	GPIOC -> CRH |= GPIO_CRH_MODE13_1;
+	//обнулить загорание
+	GPIOC->ODR |= GPIO_ODR_ODR13;
 
 	//включаем тактирование таймера
 	RCC -> APB1ENR |= RCC_APB1ENR_TIM3EN;
@@ -59,12 +64,30 @@ int main(void)
 	//разрешаем прерывания таймера 3 по переполнению (DMA/interrupt enable register ;  Update interrupt enable)
 	TIM3 -> DIER |= TIM_DIER_UIE;
 
+	// Включение прерывания таймера 3
 	NVIC_EnableIRQ(TIM3_IRQn);
 
-	for(;;);
+	//включем таймер
+	TIM3->CR1 |= TIM_CR1_CEN;
+
+	for(;;)
+	{
+	};
 }
 
 void TIM3_IRQHandler(void)
 {
 	 TIM3->SR &= ~TIM_SR_UIF; //Clean UIF Flag
+
+		if ( GPIOC->ODR & GPIO_ODR_ODR13 )
+		{
+			TIM3 -> ARR = work-1;
+			GPIOC->ODR &= ~ GPIO_ODR_ODR13;
+		}
+		else
+		{
+			TIM3 -> ARR = delay-1;
+			GPIOC->ODR |= GPIO_ODR_ODR13;
+		}
+
 }

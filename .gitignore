@@ -1,7 +1,6 @@
 .settings/
 Debug/
 inc/
-startup/
 .cproject
 .project
 *.cfg
