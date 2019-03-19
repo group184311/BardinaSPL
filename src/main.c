@@ -27,6 +27,13 @@ int main(void)
 	GPIOA -> CRH |= GPIO_CRH_CNF8_1;
 	GPIOA->ODR &= ~GPIO_ODR_ODR8; //к земле
 
+	//кнопка 3 - порт A, пин3 (low - CRL)
+	//сброс состояния
+	GPIOA -> CRL &= ~(GPIO_CRL_CNF3_1 | GPIO_CRL_CNF3_0 | GPIO_CRL_MODE3_1 | GPIO_CRL_MODE3_0);
+	//вывод кнопки как выход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
+	GPIOA -> CRL |= GPIO_CRL_CNF3_1;
+
+
 	//светодиод - порт C, пин13 (high - CRH)
 	//сброс состояния
 	//вывод светодиода как выход pull/push MODE=10: Max. output speed 2 MHz ; CRH=00:  General purpose output push-pull
