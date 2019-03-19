@@ -19,29 +19,28 @@ int main(void)
 	//кнопка 1 - порт A, пин6 (low - CRL)
 	//сброс состояния
 	GPIOA -> CRL &= ~(GPIO_CRL_CNF6_1 | GPIO_CRL_CNF6_0 | GPIO_CRL_MODE6_1 | GPIO_CRL_MODE6_0);
-	//вывод кнопки как выход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
+	//вывод кнопки как вход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
 	GPIOA -> CRL |= GPIO_CRL_CNF6_1;
 	GPIOA->ODR &= ~GPIO_ODR_ODR6; //к земле
 
 	//кнопка 2 - порт A, пин8 (high - CRH)
 	//сброс состояния
 	GPIOA -> CRH &= ~(GPIO_CRH_CNF8_1 | GPIO_CRH_CNF8_0 | GPIO_CRH_MODE8_1 | GPIO_CRH_MODE8_0);
-	//вывод кнопки как выход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
+	//вывод кнопки как вход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
 	GPIOA -> CRH |= GPIO_CRH_CNF8_1;
 	GPIOA->ODR &= ~GPIO_ODR_ODR8; //к земле
 
 	//кнопка 3 - порт A, пин3 (low - CRL)
 	//сброс состояния
 	GPIOA -> CRL &= ~(GPIO_CRL_CNF3_1 | GPIO_CRL_CNF3_0 | GPIO_CRL_MODE3_1 | GPIO_CRL_MODE3_0);
-	//вывод кнопки как выход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
-	// ТЫ САМА ПОНИМАЕШЬ КАК СКОНФИГУРИРОВАЛА КНОПКУ? ЕСЛИ ЭТО КНОПКА, ТО ПОЧЕМУ ЭТО ВЫХОД?
+	//вывод кнопки как вход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
 	GPIOA -> CRL |= GPIO_CRL_CNF3_1;
-	//ПОДТЯЖКА К ЧЕМУ? ОДР ЗАБЫЛА
+	GPIOA -> ODR |= GPIO_ODR_ODR3; //к питанию
 
 	//кнопка 4 - порт B, пин12 (high - CRH)
 	//сброс состояния
 	GPIOB -> CRH &= ~(GPIO_CRH_CNF12_1 | GPIO_CRH_CNF12_0 | GPIO_CRH_MODE12_1 | GPIO_CRH_MODE12_0);
-	//вывод кнопки как выход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
+	//вывод кнопки как вход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
 	GPIOB -> CRH |= GPIO_CRH_CNF12_1;
 	GPIOB -> ODR |= GPIO_ODR_ODR12; //к питанию
 
@@ -72,6 +71,25 @@ int main(void)
 
 	for(;;)
 	{
+		//условие для кнопки 2
+		if ( GPIOA->IDR & GPIO_IDR_IDR8 )
+		{
+			work = 1500-1;
+		}
+		//условие для кнопки 3
+		else if(!(GPIOA->IDR & GPIO_IDR_IDR3))
+		{
+			 work = 2500-1;
+		}
+		//условие для кнопки 4
+		else if(!(GPIOB->IDR & GPIO_IDR_IDR12))
+		{
+			work = 3500-1;
+		}
+		else
+		{
+			work = 500-1;
+		}
 	};
 }
 
