@@ -1,8 +1,8 @@
-**
+/*
   ******************************************************************************
   * @file    main.c
   * @author  Bardina VA
-  * @version CMSIS
+  * @version CMSIS & STD
   ******************************************************************************
 */
 
@@ -16,7 +16,10 @@ int main(void)
 {
 
 	//Включаем тактирование порта A, B и C
-	RCC ->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN | RCC_APB2ENR_IOPCEN;
+	//RCC ->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN | RCC_APB2ENR_IOPCEN;
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
 
 	//кнопка 1 - порт A, пин6 (low - CRL)
 	//сброс состояния
