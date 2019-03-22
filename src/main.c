@@ -1,4 +1,4 @@
-/**
+**
   ******************************************************************************
   * @file    main.c
   * @author  Bardina VA
@@ -10,11 +10,10 @@
 
 uint16_t delay = 500;
 uint16_t work = 500;
+uint16_t last_state, state, last_delay; //значение в прошлый и настоящий момент времени
 
 int main(void)
 {
-
-	uint16_t last_state, state, last_delay; //значение в прошлый и настоящий момент времени
 
 	//Включаем тактирование порта A, B и C
 	RCC ->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN | RCC_APB2ENR_IOPCEN;
