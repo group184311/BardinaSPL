@@ -13,6 +13,9 @@ uint16_t work = 500;
 
 int main(void)
 {
+
+	uint16_t last_state, state, last_delay; //значение в прошлый и настоящий момент времени
+
 	//Включаем тактирование порта A, B и C
 	RCC ->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN | RCC_APB2ENR_IOPCEN;
 
@@ -59,7 +62,7 @@ int main(void)
 	//Fmax = 36 000 000 Hz, нужно 1000 => 36 0000 000 / 1 000 = 36 000
 	TIM3 -> PSC = 36000 - 1; //задаем предделитель TIMx_PSC
 	//начальное значение периода - 500 тактов (delay)
-	TIM3 -> ARR = delay-1;
+	TIM3 -> ARR = 2*delay-1;
 	//разрешаем прерывания таймера 3 по переполнению (DMA/interrupt enable register ;  Update interrupt enable)
 	TIM3 -> DIER |= TIM_DIER_UIE;
 
@@ -69,8 +72,39 @@ int main(void)
 	//включем таймер
 	TIM3->CR1 |= TIM_CR1_CEN;
 
+	// значение предыдущей итерации первой кнопки (PIN6, GPIOA)
+	last_state = GPIOA->IDR & GPIO_IDR_IDR6;
+
 	for(;;)
 	{
+		//условие для кнопки 1
+		state = GPIOA->IDR & GPIO_IDR_IDR6;
+		if (state != last_state)
+		{
+			TIM3->CR1 &= ~TIM_CR1_CEN;
+			if (state)
+			{
+				last_delay = delay;
+				delay = UINT16_MAX;
+			}
+			else if (TIM3->CNT >= delay)
+			{
+				delay = UINT16_MAX;
+			}
+			else if (TIM3->CNT >= 200 - 1)
+			{
+				delay = TIM3->CNT / 2;
+			}
+			else
+			{
+				delay = last_delay;
+			}
+			TIM3->CNT = 0;
+			TIM3 -> ARR = 2*delay-1;
+			TIM3->CR1 |= TIM_CR1_CEN;
+			last_state=state;
+		}
+
 		//условие для кнопки 2
 		if ( GPIOA->IDR & GPIO_IDR_IDR8 )
 		{
@@ -99,12 +133,12 @@ void TIM3_IRQHandler(void)
 
 		if ( GPIOC->ODR & GPIO_ODR_ODR13 )
 		{
-			TIM3 -> ARR = work-1;
+			TIM3 -> ARR = 2*work-1;
 			GPIOC->ODR &= ~ GPIO_ODR_ODR13;
 		}
 		else
 		{
-			TIM3 -> ARR = delay-1;
+			TIM3 -> ARR = 2*delay-1;
 			GPIOC->ODR |= GPIO_ODR_ODR13;
 		}
 
