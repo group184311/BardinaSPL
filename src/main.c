@@ -68,10 +68,16 @@ int main(void)
 	//светодиод - порт C, пин13 (high - CRH)
 	//сброс состояния
 	//вывод светодиода как выход pull/push MODE=10: Max. output speed 2 MHz ; CRH=00:  General purpose output push-pull
-	GPIOC -> CRH &= ~(GPIO_CRH_CNF13_1 | GPIO_CRH_CNF13_0 | GPIO_CRH_MODE13_1 | GPIO_CRH_MODE13_0);
-	GPIOC -> CRH |= GPIO_CRH_MODE13_1;
+	//GPIOC -> CRH &= ~(GPIO_CRH_CNF13_1 | GPIO_CRH_CNF13_0 | GPIO_CRH_MODE13_1 | GPIO_CRH_MODE13_0);
+	//GPIOC -> CRH |= GPIO_CRH_MODE13_1;
+	GPIO_InitTypeDef PinC13;
+	PinC13.GPIO_Pin = GPIO_Pin_13;
+	PinC13.GPIO_Speed =  GPIO_Speed_2MHz;
+	PinC13.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_Init(GPIOC, &PinC13);
 	//обнулить загорание
-	GPIOC->ODR |= GPIO_ODR_ODR13;
+	//GPIOC->ODR |= GPIO_ODR_ODR13;
+	GPIO_WriteBit(GPIOC, GPIO_Pin_13, Bit_SET);
 
 	//включаем тактирование таймера
 	RCC -> APB1ENR |= RCC_APB1ENR_TIM3EN;
