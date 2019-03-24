@@ -80,7 +80,8 @@ int main(void)
 	GPIO_WriteBit(GPIOC, GPIO_Pin_13, Bit_SET);
 
 	//включаем тактирование таймера
-	RCC -> APB1ENR |= RCC_APB1ENR_TIM3EN;
+	//RCC -> APB1ENR |= RCC_APB1ENR_TIM3EN;
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 
 	//запускаем таймер на тактовой частоте в 1000 Hz
 	//Fmax = 36 000 000 Hz, нужно 1000 => 36 0000 000 / 1 000 = 36 000
