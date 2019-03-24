@@ -23,31 +23,47 @@ int main(void)
 
 	//кнопка 1 - порт A, пин6 (low - CRL)
 	//сброс состояния
-	GPIOA -> CRL &= ~(GPIO_CRL_CNF6_1 | GPIO_CRL_CNF6_0 | GPIO_CRL_MODE6_1 | GPIO_CRL_MODE6_0);
+	//GPIOA -> CRL &= ~(GPIO_CRL_CNF6_1 | GPIO_CRL_CNF6_0 | GPIO_CRL_MODE6_1 | GPIO_CRL_MODE6_0);
 	//вывод кнопки как вход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
-	GPIOA -> CRL |= GPIO_CRL_CNF6_1;
-	GPIOA->ODR &= ~GPIO_ODR_ODR6; //к земле
+	//GPIOA -> CRL |= GPIO_CRL_CNF6_1;
+	//GPIOA->ODR &= ~GPIO_ODR_ODR6; //к земле
+	GPIO_InitTypeDef PinA6;
+	PinA6.GPIO_Pin = GPIO_Pin_6;
+	PinA6.GPIO_Mode = GPIO_Mode_IPD;
+	GPIO_Init(GPIOA, &PinA6);
 
 	//кнопка 2 - порт A, пин8 (high - CRH)
 	//сброс состояния
-	GPIOA -> CRH &= ~(GPIO_CRH_CNF8_1 | GPIO_CRH_CNF8_0 | GPIO_CRH_MODE8_1 | GPIO_CRH_MODE8_0);
+	//GPIOA -> CRH &= ~(GPIO_CRH_CNF8_1 | GPIO_CRH_CNF8_0 | GPIO_CRH_MODE8_1 | GPIO_CRH_MODE8_0);
 	//вывод кнопки как вход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
-	GPIOA -> CRH |= GPIO_CRH_CNF8_1;
-	GPIOA->ODR &= ~GPIO_ODR_ODR8; //к земле
+	//GPIOA -> CRH |= GPIO_CRH_CNF8_1;
+	//GPIOA->ODR &= ~GPIO_ODR_ODR8; //к земле
+	GPIO_InitTypeDef PinA8;
+	PinA8.GPIO_Pin = GPIO_Pin_8;
+	PinA8.GPIO_Mode = GPIO_Mode_IPD;
+	GPIO_Init(GPIOA, &PinA8);
 
 	//кнопка 3 - порт A, пин3 (low - CRL)
 	//сброс состояния
-	GPIOA -> CRL &= ~(GPIO_CRL_CNF3_1 | GPIO_CRL_CNF3_0 | GPIO_CRL_MODE3_1 | GPIO_CRL_MODE3_0);
+	//GPIOA -> CRL &= ~(GPIO_CRL_CNF3_1 | GPIO_CRL_CNF3_0 | GPIO_CRL_MODE3_1 | GPIO_CRL_MODE3_0);
 	//вывод кнопки как вход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
-	GPIOA -> CRL |= GPIO_CRL_CNF3_1;
-	GPIOA -> ODR |= GPIO_ODR_ODR3; //к питанию
+	//GPIOA -> CRL |= GPIO_CRL_CNF3_1;
+	//GPIOA -> ODR |= GPIO_ODR_ODR3; //к питанию
+	GPIO_InitTypeDef PinA3;
+	PinA3.GPIO_Pin = GPIO_Pin_3;
+	PinA3.GPIO_Mode = GPIO_Mode_IPU;
+	GPIO_Init(GPIOA, &PinA3);
 
 	//кнопка 4 - порт B, пин12 (high - CRH)
 	//сброс состояния
-	GPIOB -> CRH &= ~(GPIO_CRH_CNF12_1 | GPIO_CRH_CNF12_0 | GPIO_CRH_MODE12_1 | GPIO_CRH_MODE12_0);
+	//GPIOB -> CRH &= ~(GPIO_CRH_CNF12_1 | GPIO_CRH_CNF12_0 | GPIO_CRH_MODE12_1 | GPIO_CRH_MODE12_0);
 	//вывод кнопки как вход с подтяжкой MODE=00: Input; CNF=10: Floating input (reset state)
-	GPIOB -> CRH |= GPIO_CRH_CNF12_1;
-	GPIOB -> ODR |= GPIO_ODR_ODR12; //к питанию
+	//GPIOB -> CRH |= GPIO_CRH_CNF12_1;
+	//GPIOB -> ODR |= GPIO_ODR_ODR12; //к питанию
+	GPIO_InitTypeDef PinB12;
+	PinB12.GPIO_Pin = GPIO_Pin_12;
+	PinB12.GPIO_Mode = GPIO_Mode_IPU;
+	GPIO_Init(GPIOB, &PinB12);
 
 	//светодиод - порт C, пин13 (high - CRH)
 	//сброс состояния
@@ -102,6 +118,7 @@ int main(void)
 				delay = last_delay;
 			}
 			TIM3->CNT = 0;
+			GPIOC->ODR |= GPIO_ODR_ODR13;
 			TIM3 -> ARR = 2*delay-1;
 			TIM3->CR1 |= TIM_CR1_CEN;
 			last_state=state;
