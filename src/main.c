@@ -1,4 +1,4 @@
-**
+/*
   ******************************************************************************
   * @file    main.c
   * @author  Bardina VA
@@ -99,6 +99,7 @@ int main(void)
 				delay = last_delay;
 			}
 			TIM3->CNT = 0;
+			GPIOC->ODR |= GPIO_ODR_ODR13;
 			TIM3 -> ARR = 2*delay-1;
 			TIM3->CR1 |= TIM_CR1_CEN;
 			last_state=state;
@@ -107,21 +108,21 @@ int main(void)
 		//условие для кнопки 2
 		if ( GPIOA->IDR & GPIO_IDR_IDR8 )
 		{
-			work = 1500-1;
+			work = 1500;
 		}
 		//условие для кнопки 3
 		else if(!(GPIOA->IDR & GPIO_IDR_IDR3))
 		{
-			 work = 2500-1;
+			 work = 2500;
 		}
 		//условие для кнопки 4
 		else if(!(GPIOB->IDR & GPIO_IDR_IDR12))
 		{
-			work = 3500-1;
+			work = 3500;
 		}
 		else
 		{
-			work = 500-1;
+			work = 500;
 		}
 	};
 }
