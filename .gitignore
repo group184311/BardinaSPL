@@ -1,0 +1,17 @@
+.settings/
+
+Debug/
+
+inc/
+
+.cproject
+
+.project
+
+*.cfg
+
+*.xml
+
+*.ld
+
+*.bin
