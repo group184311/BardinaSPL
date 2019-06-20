@@ -12,14 +12,14 @@ uint16_t delay = 500;
 uint16_t work = 500;
 uint16_t last_state, state, last_delay; //значение в прошлый и настоящий момент времени
 
-void ports(void);
+void takt(void);
 void button (void);
 void led (void);
 void timmer(void);
 
 int main(void)
 {
-	ports();
+	takt();
 	button();
 	led();
 	timmer();
@@ -78,12 +78,14 @@ int main(void)
 	};
 }
 
-void ports(void)
+void takt(void)
 {
 	//Включаем тактирование порта A, B и C
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+	//включаем тактирование таймера
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 }
 
 void button(void){
@@ -128,15 +130,11 @@ void led(void){
 	LED.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_Init(GPIOC, &LED);
 	//обнулить загорание
-	//GPIOC->ODR |= GPIO_ODR_ODR13;
 	GPIO_WriteBit(GPIOC, LED.GPIO_Pin, Bit_SET);
 }
 
 void timmer(void)
 {
-	//включаем тактирование таймера
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-
 	//запускаем таймер на тактовой частоте в 1000 Hz
 	//Fmax = 36 000 000 Hz, нужно 1000 => 36 0000 000 / 1 000 = 36 000
 	//задаем предделитель TIMx_PSC
@@ -173,4 +171,3 @@ void TIM3_IRQHandler(void)
 			GPIO_WriteBit(GPIOC, GPIO_Pin_13, Bit_SET);
 		}
 }
-
